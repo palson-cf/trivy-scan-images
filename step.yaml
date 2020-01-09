@@ -21,7 +21,7 @@ metadata:
     size:
       large:
         url: >-
-          https://cdn.jsdelivr.net/gh/codefresh-io/steps/incubating/bintray/icon.jpg
+          https://raw.githubusercontent.com/aquasecurity/trivy/master/imgs/logo.png
   examples:
     - description: example-1
       workflow:
@@ -29,9 +29,9 @@ metadata:
           title: Scan images
           type: codefresh-plugins/trivy-scan
           arguments:
-            IMAGES_LIST=${{IMAGES_LIST}}
-            GITHUB_TOKEN=${{GITHUB_TOKEN}}
-            SLACK_INCOMING_URL=${{SLACK_INCOMING_URL}}
+            IMAGES_LIST: ${{IMAGES_LIST}}
+            GITHUB_TOKEN: ${{GITHUB_TOKEN}}
+            SLACK_INCOMING_URL: ${{SLACK_INCOMING_URL}}
 spec:
   arguments: |-
     {
@@ -45,7 +45,7 @@ spec:
         ],
         "properties": {
             "IMAGES_LIST": {
-                "type": "string",
+                "type": ["string", "array"],
                 "description": "Images to scan"
             },
             "GITHUB_TOKEN": {
@@ -55,6 +55,14 @@ spec:
             "SLACK_INCOMING_URL": {
                 "type": "string",
                 "description": "URL to notify"
+            },
+            "TRIVY_USERNAME": {
+                "type": "string",
+                "description": "DockerHub username"
+            },
+            "TRIVY_PASSWORD": {
+                "type": "string",
+                "description": "DockerHub password"
             }
         }
     }
@@ -66,3 +74,5 @@ spec:
         - 'IMAGES_LIST=${{IMAGES_LIST}}'
         - 'GITHUB_TOKEN=${{GITHUB_TOKEN}}'
         - 'SLACK_INCOMING_URL=${{SLACK_INCOMING_URL}}'
+        - 'TRIVY_USERNAME=${{TRIVY_USERNAME}}'
+        - 'TRIVY_PASSWORD=${{TRIVY_PASSWORD}}'

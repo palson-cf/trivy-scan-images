@@ -21,7 +21,7 @@ scan_to_json() {
 # TODO
 # to catch  GitHub 'API rate limit exceeded' error
   local image=$1
-  trivy -f json -q --ignore-unfixed --cache-dir ${CACHE_DIR} $image | jq .[]
+  trivy -f json -q --ignore-unfixed --cache-dir ${CACHE_DIR} $image
 }
 
 main() {
@@ -35,17 +35,21 @@ main() {
   mkdir -p ${REPORT_DIR} || true
 
   echoSection "Create the main report file"
-  echo '{"images": []}' | jq . > ${REPORT_FILE}
+  echo '{"IMAGES": {}}' | jq . > ${REPORT_FILE}
 
 
   local IFS=$',' 
-  for image in $IMAGES_LIST; do
+  for IMAGE in $IMAGES_LIST; do
 
-    echoSection "Scanning $image image."
-    local scan_object=$(scan_to_json $image)
+    echoSection "Scanning $IMAGE image."
+    local SCAN_OBJECT=$(scan_to_json $IMAGE)
 
     echoSection "Merge $image report with main file"
-    jq --argjson scanObject "$scan_object" '.images[.images|length] |= .+ $scanObject' $REPORT_FILE > /tmp/tmp.json && mv /tmp/tmp.json $REPORT_FILE
+    jq \
+      --arg image_name "${IMAGE}" \
+      --argjson scanObject "${SCAN_OBJECT}" \
+      '.IMAGES |= .+ {($image_name): $scanObject}' \
+      $REPORT_FILE > /tmp/tmp.json && mv /tmp/tmp.json $REPORT_FILE
   done
 
 }
