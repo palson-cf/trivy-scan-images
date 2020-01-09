@@ -54,7 +54,7 @@ main() {
 
     echo "Object: ${SCAN_OBJECT}"
     echo raw
-    trivy \
+    echo trivy \
       -f json \
       --ignore-unfixed \
       --cache-dir ${CACHE_DIR} \
