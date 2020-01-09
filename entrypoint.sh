@@ -73,8 +73,6 @@ main() {
       $REPORT_FILE > /tmp/tmp.json && mv /tmp/tmp.json $REPORT_FILE
   done
 
-  sleep 3000
-
 }
 
 main $@
