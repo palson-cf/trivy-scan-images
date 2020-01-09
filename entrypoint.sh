@@ -53,7 +53,13 @@ main() {
     local SCAN_OBJECT=$(scan_to_json $IMAGE)
 
     echo "Object: ${SCAN_OBJECT}"
-    env
+    echo raw
+    trivy \
+      -f json \
+      --ignore-unfixed \
+      --cache-dir \
+      --skip-update \
+      ${CACHE_DIR} $IMAGE
 
     echoSection "Merge $IMAGE report with main file"
     jq \
