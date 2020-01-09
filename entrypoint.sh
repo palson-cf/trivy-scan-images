@@ -21,7 +21,13 @@ scan_to_json() {
 # TODO
 # to catch  GitHub 'API rate limit exceeded' error
   local image=$1
-  trivy -f json -q --ignore-unfixed --cache-dir ${CACHE_DIR} $image
+  trivy \
+    -f json \
+    -q \
+    --ignore-unfixed \
+    --cache-dir \
+    --skip-update \
+    ${CACHE_DIR} $image
 }
 
 main() {
@@ -45,6 +51,8 @@ main() {
 
     echoSection "Scanning $IMAGE image."
     local SCAN_OBJECT=$(scan_to_json $IMAGE)
+
+    echo $SCAN_OBJECT
 
     echoSection "Merge $image report with main file"
     jq \
