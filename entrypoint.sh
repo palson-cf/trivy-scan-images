@@ -30,12 +30,25 @@ scan_to_json() {
     $image
 }
 
+unset_empty_vars() {
+for var in $(env); do 
+  if [[ "${var##*=}" == "\${{${var%=*}}}" ]]; then 
+    echo "Unsetting ${var%=*}"; 
+    unset ${var%=*};
+  fi;
+done
+}
+
+
+
 main() {
 # Check images list
   if [[ -z $IMAGES_LIST ]]; then
     echo "[ERROR] The \$IMAGES_LIST variable is empty."
     exit 1
   fi
+
+  unset_empty_vars
 
   echoSection "Create report dir"
   mkdir -p ${REPORT_DIR} || true
@@ -52,15 +65,6 @@ main() {
     echoSection "Scanning $IMAGE image."
     local SCAN_OBJECT=$(scan_to_json $IMAGE)
 
-    echo "Object: ${SCAN_OBJECT}"
-    echo raw
-    echo trivy \
-      -f json \
-      --ignore-unfixed \
-      --cache-dir ${CACHE_DIR} \
-      --skip-update \
-      $IMAGE
-
     echoSection "Merge $IMAGE report with main file"
     jq \
       --arg image_name "${IMAGE}" \
@@ -68,6 +72,8 @@ main() {
       '.IMAGES |= .+ {($image_name): $scanObject}' \
       $REPORT_FILE > /tmp/tmp.json && mv /tmp/tmp.json $REPORT_FILE
   done
+
+  sleep 3000
 
 }
 
