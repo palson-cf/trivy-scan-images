@@ -37,6 +37,8 @@ main() {
   echoSection "Create the main report file"
   echo '{"IMAGES": {}}' | jq . > ${REPORT_FILE}
 
+  echoSection "Check connectivity to DB"
+  trivy --download-db-only --cache-dir ${CACHE_DIR}
 
   local IFS=$',' 
   for IMAGE in $IMAGES_LIST; do
