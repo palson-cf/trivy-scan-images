@@ -52,9 +52,10 @@ main() {
     echoSection "Scanning $IMAGE image."
     local SCAN_OBJECT=$(scan_to_json $IMAGE)
 
-    echo $SCAN_OBJECT
+    echo "Object: ${SCAN_OBJECT}"
+    env
 
-    echoSection "Merge $image report with main file"
+    echoSection "Merge $IMAGE report with main file"
     jq \
       --arg image_name "${IMAGE}" \
       --argjson scanObject "${SCAN_OBJECT}" \
