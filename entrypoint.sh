@@ -7,7 +7,7 @@ set -o pipefail
 # clear cache because of 'latest' images
 
 DATE=$(date +%F-%H%M)
-TRIVY_DIR="/codefresh/volume/trivy/"
+TRIVY_DIR="/codefresh/volume/trivy"
 CACHE_DIR="${TRIVY_DIR}/cache"
 REPORT_DIR="${TRIVY_DIR}/reports"
 REPORT_FILE="${REPORT_DIR}/report-${DATE}.json"
@@ -25,7 +25,7 @@ scan_to_json() {
     -f json \
     -q \
     --ignore-unfixed \
-    --cache-dir \
+    --cache-dir ${CACHE_DIR} \
     --skip-update \
     ${CACHE_DIR} $image
 }
@@ -57,7 +57,7 @@ main() {
     trivy \
       -f json \
       --ignore-unfixed \
-      --cache-dir \
+      --cache-dir ${CACHE_DIR} \
       --skip-update \
       ${CACHE_DIR} $IMAGE
 
