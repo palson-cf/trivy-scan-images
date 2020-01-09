@@ -27,7 +27,7 @@ scan_to_json() {
     --ignore-unfixed \
     --cache-dir ${CACHE_DIR} \
     --skip-update \
-    ${CACHE_DIR} $image
+    $image
 }
 
 main() {
@@ -59,7 +59,7 @@ main() {
       --ignore-unfixed \
       --cache-dir ${CACHE_DIR} \
       --skip-update \
-      ${CACHE_DIR} $IMAGE
+      $IMAGE
 
     echoSection "Merge $IMAGE report with main file"
     jq \
