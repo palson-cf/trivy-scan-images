@@ -21,8 +21,9 @@ scan_to_json() {
 # TODO
 # to catch  GitHub 'API rate limit exceeded' error
   local image=$1
+  local format=${2:-table}
   trivy \
-    -f json \
+    -f ${format} \
     -q \
     --ignore-unfixed \
     --cache-dir ${CACHE_DIR} \
@@ -31,12 +32,13 @@ scan_to_json() {
 }
 
 unset_empty_vars() {
-for var in $(env); do 
-  if [[ "${var##*=}" == "\${{${var%=*}}}" ]]; then 
-    echo "Unsetting ${var%=*}"; 
-    unset ${var%=*};
-  fi;
-done
+  echoSection "Unsetting empty vars"
+  for var in $(env); do 
+    if [[ "${var##*=}" == "\${{${var%=*}}}" ]]; then 
+      echo "Unsetting ${var%=*}"; 
+      unset ${var%=*};
+    fi;
+  done
 }
 
 
@@ -60,12 +62,13 @@ main() {
   trivy --download-db-only --cache-dir ${CACHE_DIR}
 
   local IFS=$',' 
+
   for IMAGE in $IMAGES_LIST; do
-
     echoSection "Scanning $IMAGE image."
-    local SCAN_OBJECT=$(scan_to_json $IMAGE)
-
-    echoSection "Merge $IMAGE report with main file"
+    scan_to_json $IMAGE
+    echo "Get the json"
+    local SCAN_OBJECT=$(scan_to_json $IMAGE json)
+    echo "Merge merge json with the main report file"
     jq \
       --arg image_name "${IMAGE}" \
       --argjson scanObject "${SCAN_OBJECT}" \
